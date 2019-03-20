@@ -61,11 +61,11 @@ x 	PR(x)	y1 y2 ...
 For each line of the file, the mapper:
 
 * First of all it emits a pair key,value in which the key (of type Text) contains the node id and the value (of type Text) contains the PR(x) and the list of adjacencies:
-```
-< x,PR(x)	y1 y2>	
-...
-```
-This will be used by the reducer to reconstruct the graph.
+	```
+	< x,PR(x)	y1 y2>	
+	...
+	```
+	This will be used by the reducer to reconstruct the graph.
 
 * Subsequently the mapper emits for every node y1,y2,... of the adjacency list a pair key,value in which the key is the node id and the value is the 
 
