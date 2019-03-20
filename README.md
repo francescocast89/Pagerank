@@ -83,4 +83,4 @@ Than the final pagerank is computed using the formula. The reducer emit a pair <
 	```
 
 ### Sorting
-The sorter is a map job that take as input the output file from the reducer and 
+The sorter is a map job that take as input the output file from the reducer and  
