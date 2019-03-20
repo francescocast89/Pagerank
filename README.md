@@ -56,23 +56,24 @@ The map phase take as input the output file of the parser.
 Each line is formatted in this way
 
 ```
-x 	PR(x)	y1 y2 ... 
+Node id 	PageRank 	adjacency list of nodes 
+x 		PR(x) 		y1 y2 ...
 ```
 For each line of the file, the mapper:
 
 * First of all it emits a pair key,value in which the key (of type Text) contains the node id and the value (of type Text) contains the PR(x) and the list of adjacencies:
 	```
-	< x,PR(x)	y1 y2>	
+	<x,PR(x)	y1 y2>	
 	...
 	```
 	This will be used by the reducer to reconstruct the graph.
 
-* Subsequently the mapper emits for every node y1,y2,... of the adjacency list a pair key,value in which the key is the node id and the value is the 
+* Subsequently the mapper emits for every node of the adjacency list a pair key,value in which the key is the node id and the value is the 
 
-```
-<y1,PR(x)/out(x)>	
-<y2,PR(x)/out(x)> 
-...
-```
+	```
+	<y1,PR(x)/out(x)>	
+	<y2,PR(x)/out(x)> 
+	...
+	```
 
 ### Ordering
