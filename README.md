@@ -43,14 +43,13 @@ We can subdivide the entire work in 3 phases: parsing, calculating and ordering.
 
 ### Parsing
 The parser is a map job that take a line of the input text and emit as key the node number and as value the initial pagerank of that node and the list of adjacent nodes.
-I get the number of nodes counting the numbers of line in the input file and than i pass this value to the parser (and also to the reducer).
-```
-Input:
-1: 2 3
 
-Output:
-1	0.25	2 3
-``` 
+```
+Node id 	PageRank 	adjacency list of nodes 
+x 		PR(x) 		y1 y2 ...
+```
+I get the number of nodes counting the numbers of line in the input file and than i pass this value to the parser (and also to the reducer).
+
 ### Calculating
 The map phase take as input the output file of the parser. 
 Each line is formatted in this way
