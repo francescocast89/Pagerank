@@ -51,14 +51,7 @@ x 		PR(x) 		y1 y2 ...
 I get the number of nodes counting the numbers of line in the input file and than i pass this value to the parser (and also to the reducer).
 
 ### Calculating
-The map phase take as input the output file of the parser. 
-Each line is formatted in this way
-
-```
-Node id 	PageRank 	adjacency list of nodes 
-x 		PR(x) 		y1 y2 ...
-```
-For each line of the file, the mapper:
+The map phase take as input the output file of the parser and for each line: 
 
 * First of all it emits a pair key,value in which the key (of type Text) contains the node id and the value (of type Text) contains the PR(x) and the list of adjacencies:
 	```
