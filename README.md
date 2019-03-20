@@ -39,7 +39,7 @@ from2: to21 to22 to23 ...
     ...
 ```
 ##  Algorithm
-We can subdivide the entire work in 3 phases: parsing, calculating and ordering.
+We can subdivide the entire work in 3 phases: parsing, calculating and sorting.
 
 ### Parsing
 The parser is a map job that take a line of the input text and emit as key the node number and as value the initial pagerank of that node and the list of adjacent nodes.
@@ -51,16 +51,18 @@ x 		PR(x) 		y1 y2 ...
 I get the number of nodes counting the numbers of line in the input file and than i pass this value to the parser (and also to the reducer).
 
 ### Calculating
+
+#### Map
 The map phase take as input the output file of the parser and for each line: 
 
-* First of all it emits a pair key,value in which the key (of type Text) contains the node id and the value (of type Text) contains the PR(x) and the list of adjacencies:
+* First of all it emits a pair <em>key,value</em> in which the <em>key</em> contains the node id and the <em>value</em> contains the PR(x) and the list of adjacencies:
 	```
 	<x,PR(x)	y1 y2>	
 	...
 	```
 	This will be used by the reducer to reconstruct the graph.
 
-* Subsequently the mapper emits for every node of the adjacency list a pair key,value in which the key is the node id and the value is the 
+* Subsequently the mapper emits for every node of the adjacency list a pair <em>key,value</em> in which the <em>key</em> is the id of the node in the list and the <em>value</em> is the PageRank of the starting node divided by the number of items into the adjacency list (which is the number of outgoing links from the starting node).
 
 	```
 	<y1,PR(x)/out(x)>	
@@ -68,4 +70,17 @@ The map phase take as input the output file of the parser and for each line:
 	...
 	```
 
-### Ordering
+#### Reduce
+The reduce phase take all the sorted pair <em>key,value</em> and check the type of value:
+
+* If it contanins more than one strings this means that value represents an adjacency list. So the reducer use this entry to reconstruct the graph. 
+* If it contains only one value this means that  it is a PageRank so this is summed to the variable sum to compute the final pagerank.
+
+Than the final pagerank is computed using the formula. The reducer emit a pair <em>key,value</em> in which the <em>key</em> is the node id and the <em>value</em> is the final pagerank and the list of adjacent nodes.
+	```
+	<x,PR(x)	y1 y2>	
+	...
+	```
+
+### Sorting
+The sorter is a map job that take as input the output file from the reducer and 
