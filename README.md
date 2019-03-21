@@ -84,6 +84,6 @@ Than the final pagerank is computed using the formula. The reducer emits a pair 
 ```
 
 ### Sorting
-The sorter is a map job that take as input the output file from the reducer and simply emits a pair <em>key,value</em> in which the <em>key</em>> is the PageRank and the <em>value</em> is the node id. Than i've defined a <em>DescendingKeyComparator </em> which is used to sort the key in descending order.
+The sorter is a map job that take as input the output file from the reducer and simply emits a pair <em>key,value</em> in which the <em>key</em> is the PageRank and the <em>value</em> is the node id. Than i've defined a <em>DescendingKeyComparator </em> which is used to sort the key in descending order.
 
 
