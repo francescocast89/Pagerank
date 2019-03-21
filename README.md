@@ -87,3 +87,35 @@ Than the final pagerank is computed using the formula. The reducer emits a pair 
 The sorter is a map job that take as input the output file from the reducer and simply emits a pair <em>key,value</em> in which the <em>key</em> is the PageRank and the <em>value</em> is the node id. Than i've defined a <em>DescendingKeyComparator </em> which is used to sort the key in descending order.
 
 
+## Tests
+For the first toy test i've used this graph:
+ ```
+B: C
+C: B
+D: A B
+E: F B D
+F: B E
+G: E B
+H: E B
+I: E B
+J: E
+K: E
+```
+After 7 iterations (≅ 3 min) the resulted output is:
+ ```
+0.31782666429629636	B
+0.30773291298765443	C
+0.09403062360493825	E
+0.04515423130864196	D
+0.04515423130864196	F
+0.038030623604938266	A
+0.019999999999999997	G
+0.019999999999999997	H
+0.019999999999999997	I
+0.019999999999999997	J
+0.019999999999999997	K
+```
+After that i've executed a second test in which the input file is links-simple-sorted.7z. This file contains 
+ ```
+
+```
