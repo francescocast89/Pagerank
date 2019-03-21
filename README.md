@@ -138,3 +138,16 @@ After 5 iterations (≅ 6 hours) the resulted output is:
 7.50773214487942E-4	2621806
 ...
 ```
+Using this file [titles-sorted.7z](http://haselgrove.id.au/wikipedia/20160305/titles-sorted.7z) i can find the page title that corresponds to each node, for the previous results we obtain:
+```
+H:S
+Wikilink
+Hyperlink
+Diacritical_mark
+Diacritic
+Geographic_coordinate_system
+International_Standard_Book_Number
+United_States
+Virtual_International_Authority_File
+Common_name
+ ```
