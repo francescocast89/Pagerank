@@ -76,7 +76,7 @@ The reduce phase take all the sorted pair <em>key,value</em> and check the type 
 * If it contanins more than one strings this means that value represents an adjacency list. So the reducer use this entry to reconstruct the graph. 
 * If it contains only one value this means that  it is a PageRank so this is summed to the variable sum to compute the final pagerank.
 
-Than the final pagerank is computed using the formula. The reducer emit a pair <em>key,value</em> in which the <em>key</em> is the node id and the <em>value</em> is the final pagerank and the list of adjacent nodes.
+Than the final pagerank is computed using the formula. The reducer emits a pair <em>key,value</em> in which the <em>key</em> is the node id and the <em>value</em> is the final pagerank and the list of adjacent nodes.
 
 ```
 <x,PR(x)	y1 y2>	
@@ -84,4 +84,6 @@ Than the final pagerank is computed using the formula. The reducer emit a pair <
 ```
 
 ### Sorting
-The sorter is a map job that take as input the output file from the reducer and 
+The sorter is a map job that take as input the output file from the reducer and simply emits a pair <em>key,value</em> in which the <em>key</em>> is the PageRank and the <em>value</em> is the node id. Than i've defined a <em>DescendingKeyComparator </em> which is used to sort the key in descending order.
+
+
