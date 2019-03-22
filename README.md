@@ -21,7 +21,7 @@ At each step we compute the PageRank as:
 
 ![](http://latex.codecogs.com/gif.latex?PR%28x%29%3D%5Cfrac%7B1-%5Clambda%7D%7BN%7D&plus;%5Clambda%20%5Csum_%7By%20%5Crightarrow%20x%7D%5Cfrac%7BPr%28y%29%7D%7Bout%28y%29%7D%5Cquad%5Cforall%20x)
 
-Pr(x) corresponds to the probability to be ant node x at the current moment. I can get there in 2 ways, on the previous step I flip a coin and :
+PR(x) corresponds to the probability to be ant node x at the current moment. I can get there in 2 ways, on the previous step I flip a coin and :
 
 * if I get tail (1-λ), I perform a random hop and go to x with  ![](http://latex.codecogs.com/gif.latex?Pr%3D%5Cfrac%7B1%7D%7BN%7D)
 * if I get head (λ), the only way to go to x is to be in a node y which points to x and select that arc that connects y to x with ![](http://latex.codecogs.com/gif.latex?Pr%3D%5Cfrac%7B1%7D%7Bnumber%5C%2Cof%5C%2Coutgoing%5C%2Clinks%7D%5Cquad)
