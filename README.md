@@ -7,7 +7,7 @@ PageRank is a way of measuring the importance of website pages. The Pagerank alg
 The Web is a graph, a set of nodes corresponds to the various pages and the hyperlinks are the arcs.
 
 We start from a random page then:
-* Randomly pick an outogoing link with probability λ
+* Randomly pick an outgoing link with probability λ
 * Randomly jump into a page with probability 1-λ
 
 The PageRank of page x Pr(x) is the probability of being on page x at a random moment in time.
