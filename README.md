@@ -28,8 +28,8 @@ PR(x) corresponds to the probability to be ant node x at the current moment. I c
 &nbsp; y is not the only node that points to x so I have to sum up over all the nodes that points to x.
 
 We procede in a new iteration if &nbsp; ![](http://latex.codecogs.com/gif.latex?%5Cleft%20%7CPR%28t&plus;1%29-PR%28t%29%20%5Cright%20%7C%3C%20%5Cepsilon)
-We have also to pay attenttion to dangling nodes: nodes in the graph with no outgoing edges.If werun the simplified PageRank
-algorithm on a graph with this nodes the total PageRank mass will be not conserved. So we have to redistribute the
+We have also to pay attenttion to dangling nodes: nodes in the graph with no outgoing edges.
+If werun the simplified PageRank algorithm on a graph with this nodes the total PageRank mass will be not conserved. So we have to redistribute the
 "lost" mass on dangling nodes across all the nodes in the graph.
 
 
