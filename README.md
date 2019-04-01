@@ -36,6 +36,10 @@ I’ve decided to considering a smaller one as the Wikipedia Graph. Wikimedia Fo
 dumps of Wikipedia and all Wikimedia Foundation projects on a regular basis. Is possible to download the latest dumps
 (for the last year) here. I have used two sql files, wikidatawiki-latest-page.sql.gz and wikidatawiki-latest-pagelinks.sql.gz.
 The latter contains page-to-page link lists the former, instead contains info about each page.
-
+## Parsing
+First of all I have used this Python script to "convert" the two .sql file to a more readable .csv format. Than I have
+implemented a Hadoop MapReduce application to parse the .csv file.
+Page Parsing: is a MapReuce job in which taken as input enwiki-latest-page.csv and extract the two relevat fields page id
+and page title.
 
 
