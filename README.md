@@ -31,8 +31,8 @@ We procede in a new iteration if &nbsp; ![](http://latex.codecogs.com/gif.latex?
 We have also to pay attenttion to dangling nodes: nodes in the graph with no outgoing edges.
 If werun the simplified PageRank algorithm on a graph with this nodes the total PageRank mass will be not conserved. So we have to redistribute the
 "lost" mass on dangling nodes across all the nodes in the graph.
-###Input Files
- i’ve decided to considering a smaller one as the Wikipedia Graph. Wikimedia Foundation releases data
+### Input Files
+I’ve decided to considering a smaller one as the Wikipedia Graph. Wikimedia Foundation releases data
 dumps of Wikipedia and all Wikimedia Foundation projects on a regular basis. Is possible to download the latest dumps
 (for the last year) here. I have used two sql files, wikidatawiki-latest-page.sql.gz and wikidatawiki-latest-pagelinks.sql.gz.
 The latter contains page-to-page link lists the former, instead contains info about each page.
