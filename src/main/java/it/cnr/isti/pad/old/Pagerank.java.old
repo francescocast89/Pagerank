@@ -1,0 +1,203 @@
+package it.cnr.isti.pad;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import org.apache.commons.io.LineIterator;
+import java.util.*;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.commons.io.IOUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
+import org.apache.hadoop.mapreduce.Counter;
+import org.apache.hadoop.mapreduce.Counters;
+
+public class Pagerank
+{
+	//------------------------------------------Initialize PR-------------------------------------------------
+	public static class Pagerank_Setup extends Mapper<Text, Text, Text, Text>
+	{	
+		private int nodes_number;
+		private Text map_key = new Text();
+		private Text map_value = new Text();
+		private char delimiter = '\t';
+
+		public void map(Text key, Text value, Context context) throws IOException, InterruptedException
+		{  
+			map_value.set(Double.toString(1.0/nodes_number)+delimiter+value);
+			context.write(key,map_value);
+		}
+
+		@Override
+		protected void setup(Context context) throws IOException, InterruptedException {
+			this.nodes_number = context.getConfiguration().getInt("NODES_NUMBER", 0);
+		}
+	}
+	//-------------------------------------------Sorter------------------------------------------------
+	public static class Sorter extends Mapper<Text, Text, DoubleWritable, Text>
+	{
+		private DoubleWritable map_key = new DoubleWritable();
+		private Text map_value = new Text();
+
+		public void map(Text key, Text value, Context context) throws IOException, InterruptedException
+		{  
+			map_key.set(Double.parseDouble(value.toString().split("\\t")[0]));
+			context.write(map_key,key);
+		}
+	}
+	//------------------------------------------Calc PR-----------------------------------------------
+	public static class Map extends Mapper<Text, Text, Text, Text>
+	{
+
+		private char delimiter = '\t';
+		private Text map_key = new Text();
+		private Text map_value = new Text();
+		private double pagerank = 0;
+		public void map(Text key, Text value, Context context) throws IOException, InterruptedException
+		{
+			context.write(key,value);
+			pagerank = Double.parseDouble(value.toString().split("\\t")[0]);
+			if(value.toString().split("\\t").length>1){
+				int len = value.toString().split("\\t")[1].split("[ ]").length;
+				for (String s: value.toString().split("\\t")[1].split("[ ]"))
+				{
+					map_key.set(s);
+					map_value.set(Double.toString(pagerank/len));
+					context.write(map_key,map_value);
+				}
+			}else{
+				map_value.set(Double.toString(pagerank));
+				context.write(key,map_value);
+			}
+
+		}
+
+	}
+	public static class Red extends Reducer<Text, Text, Text, Text>
+	{
+		private int nodes_number;
+		private double lambda;
+		private Text red_key = new Text();
+		private Text red_value = new Text();
+		private char delimiter = '\t';
+
+		public static enum Counter {
+			CONV
+		}
+
+		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException
+		{
+			Node node = new Node(key.toString());
+			double sum = 0;
+			double finalpagerank = 0;
+			String entry[];
+			for (Text val:values){
+				entry = val.toString().split("\\t");
+				if (entry.length > 1){
+					node.setAdj_list(entry[1]);
+					node.setPagerank(Double.parseDouble(entry[0]));
+				}else{
+					sum += Double.parseDouble(entry[0]);
+				}
+			}
+			finalpagerank = ((1-lambda)/nodes_number)+(lambda*(sum));
+			context.getCounter(Counter.CONV).increment((int)(Math.abs(finalpagerank-node.getPagerank())*(nodes_number*1000)));
+			node.setPagerank(finalpagerank);
+			red_value.set(Double.toString(finalpagerank)+delimiter+node.getAdj_list());
+			red_key.set(key.toString());
+			context.write(red_key ,red_value);
+		}
+		@Override
+		protected void setup(Context context) throws IOException, InterruptedException {
+			this.nodes_number = context.getConfiguration().getInt("NODES_NUMBER", 0);
+			this.lambda = Double.parseDouble(context.getConfiguration().get("LAMBDA", "0.8"));
+		}
+	}
+//----------------------------------------------------------------------------------------------------------------------
+	public static int getNumNodes(Path input_file) throws IOException {
+		Configuration conf = new Configuration();
+		FileSystem fs = input_file.getFileSystem(conf);
+		LineIterator lineIterator = IOUtils.lineIterator(fs.open(input_file), "UTF8");
+		int lines=0;
+		while ( lineIterator.hasNext() ) {
+			lines++;
+			lineIterator.nextLine();
+		}
+		return lines;
+	}
+
+	public static void main(String[] args) throws Exception
+	{	
+		double convergence = 0.01;
+		double req_convergence = 0.01;
+		String lambda = "0.85";
+		Configuration conf = new Configuration();
+		Path inputPath = new Path(args[0]);
+		Path outputPath = new Path(args[1]);
+
+		outputPath.getFileSystem(conf).delete(outputPath, true);
+
+		int nodes_number = getNumNodes(inputPath);
+	
+		Job job = Job.getInstance(conf, "PageRank_init");
+		job.getConfiguration().setInt("NODES_NUMBER", nodes_number);
+		job.setJarByClass(Pagerank.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);
+		job.setMapperClass(Pagerank_Setup.class);
+		job.setNumReduceTasks(0);
+		job.setInputFormatClass(KeyValueTextInputFormat.class);
+		FileInputFormat.setInputPaths(job, inputPath);
+		Path jobOutputPath = new Path(outputPath,"0");
+		FileOutputFormat.setOutputPath(job, jobOutputPath);
+		job.waitForCompletion(true);
+		inputPath=jobOutputPath;
+
+		int iter=1;
+		while (true) {
+			job = Job.getInstance(conf, "PageRankJob_"+iter);
+			job.getConfiguration().setInt("NODES_NUMBER", nodes_number);
+			job.getConfiguration().set("LAMBDA", lambda);
+			job.setJarByClass(Pagerank.class);
+			job.setOutputKeyClass(Text.class);
+			job.setOutputValueClass(Text.class);
+			job.setMapperClass(Map.class);
+			job.setReducerClass(Red.class);
+			job.setInputFormatClass(KeyValueTextInputFormat.class);
+			FileInputFormat.setInputPaths(job, inputPath);
+			jobOutputPath = new Path(outputPath, String.valueOf(iter));
+			FileOutputFormat.setOutputPath(job, jobOutputPath);
+			job.waitForCompletion(true);
+			inputPath.getFileSystem(conf).delete(inputPath, true);
+			convergence = ((double)(job.getCounters().findCounter(Red.Counter.CONV).getValue()))/((nodes_number*10000)*nodes_number);
+			System.out.println((job.getCounters().findCounter(Red.Counter.CONV).getValue())+"	"+convergence);
+			inputPath = jobOutputPath;
+	      	iter++;
+			if(convergence<req_convergence){
+				break;
+			}
+	    }
+
+		Job job_sorter = new Job(conf, "Sorter_job");
+		job_sorter.setJarByClass(Pagerank.class);
+		job_sorter.setOutputKeyClass(DoubleWritable.class);
+		job_sorter.setOutputValueClass(Text.class);
+		job_sorter.setMapperClass(Sorter.class);
+		job_sorter.setInputFormatClass(KeyValueTextInputFormat.class);
+		job_sorter.setSortComparatorClass(DescendingKeyComparator.class);
+		FileInputFormat.setInputPaths(job_sorter, inputPath);
+		FileOutputFormat.setOutputPath(job_sorter, new Path(outputPath,"sorted_"+inputPath));
+		job_sorter.waitForCompletion(true);
+		inputPath.getFileSystem(conf).delete(inputPath, true);
+	}
+}
+
