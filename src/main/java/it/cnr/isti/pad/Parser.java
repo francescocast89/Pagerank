@@ -78,23 +78,23 @@ public class Parser
 			Text red_key = new Text();
 			PairWritable red_value = new PairWritable();
 			String[] entry;
-			//boolean isActive=false;
+			boolean isActive=false;
 			double pagerank=0;
 			StringBuilder sbuilder = new StringBuilder(" ");
 			for (PairWritable val:values){
 				if(Double.isNaN(val.getPagerank().get())){
 					red_key.set(val.getAdj_list().toString());
-					//isActive=true;
+					isActive=true;
 				}else{
 					sbuilder.append(val.getAdj_list().toString()).append(" ");
 				}
 			}
-			///if(isActive){
+			if(isActive){
 				red_value.set(1.0/nodes_number,sbuilder.toString().trim());
 				red_value.setNode(true);
 				context.write(red_key,red_value);
 				//System.out.println(red_key.toString()+"	"+red_value.getPagerank().get()+"	"+red_value.getAdj_list().toString()+"	"+red_value.getAdj_list().toString().isEmpty());
-			//}
+			}
 		}
 		@Override
 		protected void setup(Context context) throws IOException, InterruptedException {
