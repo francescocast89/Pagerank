@@ -2,7 +2,6 @@ package it.cnr.isti.pad;
 
 import java.io.IOException;
 import java.io.OutputStream;
-//import org.apache.commons.io.LineIterator;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -12,17 +11,6 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Counters;
-//import org.apache.hadoop.fs.Path;
-//import org.apache.hadoop.io.SequenceFile;
-//import org.apache.hadoop.io.LongWritable;
-//import org.apache.hadoop.io.IntWritable;
-//import org.apache.hadoop.mapreduce.Job;
-//import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-///import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-//import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
-//import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
-
-//import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
 
 public class CalcPageRank
 {
