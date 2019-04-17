@@ -11,6 +11,7 @@ PR(1) node1
 ...
 ```
 Sample input ﬁles can be found in the folder test.
+
 # Pre-requisites
 Hadoop and Maven installed and properly configured.
 
