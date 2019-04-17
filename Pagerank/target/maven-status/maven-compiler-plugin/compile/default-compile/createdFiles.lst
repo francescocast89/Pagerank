@@ -1,0 +1,12 @@
+it/cnr/isti/pad/Parser.class
+it/cnr/isti/pad/Parser$Simple_Parser.class
+it/cnr/isti/pad/DescendingKeyComparator.class
+it/cnr/isti/pad/CalcPageRank$Sorter.class
+it/cnr/isti/pad/CalcPageRank$Red.class
+it/cnr/isti/pad/Pagerank.class
+it/cnr/isti/pad/CalcPageRank$Dangling$Counter.class
+it/cnr/isti/pad/CalcPageRank$Map.class
+it/cnr/isti/pad/CalcPageRank$Red$Counter.class
+it/cnr/isti/pad/CalcPageRank$Dangling.class
+it/cnr/isti/pad/PairWritable.class
+it/cnr/isti/pad/CalcPageRank.class
